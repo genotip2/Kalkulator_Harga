@@ -1,239 +1,153 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clearkey Converter</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(145deg, #e8e8e8, #f4f4f4);
-      color: #333;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Harga Online</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff; /* Latar belakang bersih/putih */
+            margin: 0;
+            padding: 5% 8%; /* Memberi jarak aman dari tepi layar */
+            color: #333;
+        }
+        
+        /* Container tanpa batas kotak/bayangan */
+        .container {
+            max-width: 800px; /* Batas lebar maksimal di PC agar tidak memanjang berlebihan, di HP akan full */
+            margin: 0 auto;
+        }
 
-    .tab-container {
-      display: flex;
-      justify-content: center;
-      margin: 20px 0;
-      border-bottom: 2px solid #ccc;
-    }
+        h2 {
+            font-size: 32px;
+            margin-top: 0;
+            margin-bottom: 30px;
+            color: #222;
+        }
 
-    .tab {
-      padding: 10px 20px;
-      cursor: pointer;
-      font-weight: bold;
-      color: #666;
-      border-bottom: 2px solid transparent;
-      transition: all 0.3s ease;
-    }
+        .form-group {
+            margin-bottom: 25px;
+        }
 
-    .tab.active {
-      color: #007BFF;
-      border-bottom: 2px solid #007BFF;
-    }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: bold;
+            font-size: 18px;
+        }
 
-    .content-container {
-      display: none;
-      max-width: 600px;
-      margin: 0 auto;
-      background: #ffffff;
-      border-radius: 10px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-      padding: 20px 30px;
-    }
+        input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 18px;
+            transition: border-color 0.3s;
+        }
 
-    .content-container.active {
-      display: block;
-    }
+        input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
 
-    h1 {
-      text-align: center;
-      color: #444;
-      font-size: 1.8em;
-      margin-bottom: 20px;
-    }
+        button {
+            width: 100%;
+            padding: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
 
-    pre {
-      background: #f8f9fa;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 12px;
-      font-size: 0.9em;
-      margin-top: 15px;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+        button:hover {
+            background-color: #0056b3;
+        }
 
-    textarea {
-      width: 100%;
-      resize: none;
-      padding: 12px;
-      font-size: 1em;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      box-sizing: border-box;
-      transition: all 0.3s ease;
-      background: #f7f7f7;
-      overflow-y: hidden; /* Hilangkan scroll vertikal */
-    }
+        .result-box {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #e9ecef; /* Latar abu-abu sangat tipis */
+            border-radius: 4px;
+            text-align: center;
+        }
 
-    textarea:focus {
-      border-color: #007BFF;
-      outline: none;
-      box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
-    }
+        .result-title {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
 
-    .btn-row {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .btn-row button {
-      flex: 1;
-    }
-
-    button {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      font-size: 1em;
-      font-weight: bold;
-      color: #fff;
-      background: linear-gradient(90deg, #007BFF, #0056b3);
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-  </style>
+        .result-value {
+            color: #28a745;
+            font-size: 36px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-  <div class="tab-container">
-    <div class="tab active" onclick="switchTab('hexToBase64')">Hex to Base64</div>
-    <div class="tab" onclick="switchTab('base64ToHex')">Base64 to Hex</div>
-  </div>
 
-  <!-- Hex to Base64 Converter -->
-  <div id="hexToBase64" class="content-container active">
-    <h1>Hex to Base64 JSON Converter</h1>
-    <textarea id="inputHex" rows="2" placeholder="Input Hex in format: kid:key (one pair per line)"></textarea>
-    <div class="btn-row">
-      <button onclick="pasteInput('inputHex')">Paste</button>
-      <button onclick="convertHexToBase64()">Convert</button>
+    <div class="container">
+        <h2>Kalkulator Harga</h2>
+        
+        <div class="form-group">
+            <label for="targetBersih">Target Bersih (Rp)</label>
+            <input type="number" id="targetBersih" placeholder="Contoh: 100000">
+        </div>
+        
+        <div class="form-group">
+            <label for="feeRate">Potongan Platform (%)</label>
+            <input type="number" id="feeRate" placeholder="Contoh: 5.5" step="0.1">
+        </div>
+        
+        <button onclick="hitungHarga()">Hitung Minimal</button>
+
+        <div class="result-box">
+            <div class="result-title">Harga Minimal Online:</div>
+            <div class="result-value" id="hasil">Rp 0</div>
+        </div>
     </div>
-    <pre id="outputHex"></pre>
-    <button onclick="copyOutput('outputHex')">Copy Output</button>
-    <button onclick="reloadTab('inputHex', 'outputHex')">Reload</button>
-  </div>
 
-  <!-- Base64 to Hex Converter -->
-  <div id="base64ToHex" class="content-container">
-    <h1>Base64 JSON to Hex Converter</h1>
-    <textarea id="inputBase64" rows="2" placeholder='Input Basa64 JSON'></textarea>
-    <div class="btn-row">
-      <button onclick="pasteInput('inputBase64')">Paste</button>
-      <button onclick="convertBase64ToHex()">Convert</button>
-    </div>
-    <pre id="outputBase64"></pre>
-    <button onclick="copyOutput('outputBase64')">Copy Output</button>
-    <button onclick="reloadTab('inputBase64', 'outputBase64')">Reload</button>
-  </div>
+    <script>
+        function hitungHarga() {
+            let targetBersih = parseFloat(document.getElementById('targetBersih').value);
+            let feeRateInput = parseFloat(document.getElementById('feeRate').value);
+            
+            if (isNaN(targetBersih) || isNaN(feeRateInput)) {
+                document.getElementById('hasil').innerText = "Masukkan angka!";
+                document.getElementById('hasil').style.color = "red";
+                return;
+            }
 
-  <script>
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-      document.querySelectorAll('.content-container').forEach(container => container.classList.remove('active'));
-      document.querySelector(`.tab[onclick="switchTab('${tabId}')"]`).classList.add('active');
-      document.getElementById(tabId).classList.add('active');
-    }
+            if (feeRateInput >= 100) {
+                document.getElementById('hasil').innerText = "Potongan error!";
+                document.getElementById('hasil').style.color = "red";
+                return;
+            }
 
-    function autoResizeTextarea(event) {
-      const textarea = event.target;
-      textarea.style.height = "auto"; // Reset height to calculate properly
-      textarea.style.height = `${textarea.scrollHeight}px`; // Set height based on content
+            let feeRate = feeRateInput / 100;
+            let hargaMinimal = targetBersih / (1 - feeRate);
 
-      // Set a minimum height for the textarea (in case it is cleared or contains minimal content)
-      const minHeight = 50; // Adjust as needed for minimum height
-      if (textarea.scrollHeight < minHeight) {
-        textarea.style.height = `${minHeight}px`;
-      }
-    }
+            // Pembulatan ke ratusan terdekat
+            let hargaDibulatkan = Math.round(hargaMinimal / 100) * 100;
 
-    // Attach auto-resize functionality
-    document.querySelectorAll('textarea').forEach(textarea => {
-      textarea.addEventListener('input', autoResizeTextarea);
-      textarea.addEventListener('paste', autoResizeTextarea);
-    });
+            let formatRupiah = new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(hargaDibulatkan);
 
-    document.querySelectorAll('textarea').forEach(textarea => {
-      textarea.addEventListener('input', () => autoResizeTextarea(textarea));
-      textarea.addEventListener('paste', () => setTimeout(() => autoResizeTextarea(textarea), 0));
-    });
+            document.getElementById('hasil').style.color = "#28a745"; 
+            document.getElementById('hasil').innerText = formatRupiah;
+        }
+    </script>
 
-    function convertHexToBase64() {
-      const input = document.getElementById('inputHex').value.trim();
-      const lines = input.split('\n');
-      const keys = lines.map(line => {
-        const [kidHex, keyHex] = line.split(':').map(part => part.trim());
-        if (!kidHex || !keyHex) return null;
-        return {
-          kty: 'oct',
-          kid: hexToBase64(kidHex),
-          k: hexToBase64(keyHex),
-        };
-      }).filter(Boolean);
-      document.getElementById('outputHex').innerText = JSON.stringify({ keys, type: 'temporary' });
-    }
-
-    function convertBase64ToHex() {
-      try {
-        const input = JSON.parse(document.getElementById('inputBase64').value.trim());
-        const output = input.keys.map(key => `${base64ToHex(key.kid)}:${base64ToHex(key.k)}`).join('\n');
-        document.getElementById('outputBase64').innerText = output;
-      } catch (e) {
-      }
-    }
-
-    function hexToBase64(hex) {
-      const bytes = [];
-      for (let i = 0; i < hex.length; i += 2) {
-        bytes.push(parseInt(hex.substr(i, 2), 16));
-      }
-      return btoa(String.fromCharCode(...bytes))
-        .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-    }
-
-    function base64ToHex(base64) {
-      const binary = atob(base64.replace(/-/g, '+').replace(/_/g, '/'));
-      return Array.from(binary).map(char => char.charCodeAt(0).toString(16).padStart(2, '0')).join('');
-    }
-
-    function copyOutput(outputId) {
-      const outputText = document.getElementById(outputId).innerText; // Ambil teks dari elemen output
-      const tempElement = document.createElement("textarea"); // Buat elemen textarea sementara
-      tempElement.value = outputText;
-      document.body.appendChild(tempElement);
-      tempElement.select(); // Pilih teks
-      document.execCommand("copy"); // Salin ke clipboard
-      document.body.removeChild(tempElement); // Hapus elemen sementara
-    }
-
-    function reloadTab(inputId, outputId) {
-      document.getElementById(inputId).value = '';
-      document.getElementById(outputId).innerText = '';
-      autoResizeTextarea({ target: document.getElementById(inputId) });
-    }
-
-    function pasteInput(inputId) {
-      navigator.clipboard.readText().then(text => {
-        document.getElementById(inputId).value = text;
-        autoResizeTextarea({ target: document.getElementById(inputId) });
-      });
-    }
-  </script>
 </body>
 </html>
